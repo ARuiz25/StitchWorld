@@ -20,7 +20,7 @@ import java.awt.event.*;
 /***
  * Step 1 for keyboard control - implements KeyListener
  */
-public class StitchWorld implements Runnable, KeyListener {
+public class StitchWorld implements Runnable, KeyListener,MouseListener,MouseMotionListener {
 
     //Variable Definition Section
 
@@ -36,16 +36,25 @@ public class StitchWorld implements Runnable, KeyListener {
 
     //Declare the variables needed for images
     public Image CarPic1;
+    public Image CarPic2;
     public Image logPic;
     public Image stitchPic;
     public Image background;
     public Image stitchDeadPic;
+    public Image Homescreen;
+    public Image LosingScreen;
 
     //Declare the character objects
     public Log[] log1;
+    public Log[] log2;
     public Cars[] Car1;
+    public Cars[] Car2;
     public Stitch user;
-
+    public boolean hitAny = false;
+    public boolean GameIsPlaying = false;
+    public boolean GameOver = false;
+    public Button HomeButton;
+    public int mouseX, mouseY;
 
 
     // Main method definition
@@ -66,26 +75,39 @@ public class StitchWorld implements Runnable, KeyListener {
          * Step 2 for keyboard control - addKeyListener(this) to the canvas
          */
         canvas.addKeyListener(this);
+        canvas.addMouseListener(this);
+        canvas.addMouseMotionListener(this);
 
         //load images
         CarPic1 = Toolkit.getDefaultToolkit().getImage("Car_1.png");
+        CarPic2 = Toolkit.getDefaultToolkit().getImage("Car_2.png");
         logPic = Toolkit.getDefaultToolkit().getImage("log.png");
         stitchPic = Toolkit.getDefaultToolkit().getImage("StitchBack4.png");
         background = Toolkit.getDefaultToolkit().getImage("background.png");
         stitchDeadPic = Toolkit.getDefaultToolkit().getImage("StitchDead2.png");
+        Homescreen = Toolkit.getDefaultToolkit().getImage("Homescreen.png");
+        LosingScreen = Toolkit.getDefaultToolkit().getImage("Losing Screen.png");
 
 
         //create (construct) the objects needed for the game
-        log1 = new Log[4];
-        for (int x=0; x<4; x=x+1){
-            log1[x] = new Log(1000, 65*x+45, (int)(Math.random()*4+1), 0, logPic);
+        user = new Stitch(510, 700, 0, 0, stitchPic);
+        log1 = new Log[5];
+        for (int x = 0; x < 5; x = x + 1) {
+            log1[x] = new Log(1000, 54 * x + 38, (int) (Math.random() * 5 + 1), 0, logPic);
         }
-            user = new Stitch(250, 250, 0, 0, stitchPic);
-
+//        log2 = new Log[2];
+//        for (int x = 0; x < 2; x = x + 1) {
+//            log2[x] = new Log(2000, -200, -(int) (Math.random() * 2 + 1), 0, logPic);
+//        }
         Car1 = new Cars[5];
-        for (int x=0; x<5; x=x+1){
-            Car1[x]= new Cars(1000,55*x+374,(int)(Math.random()*5+1),0,CarPic1);
+        for (int x = 0; x < 5; x = x + 1) {
+            Car1[x] = new Cars(1000, 55 * x + 374, (int) (Math.random() * 5 + 1), 0, CarPic1);
         }
+//        Car2 = new Cars[2];
+//        for (int x = 0; x < 2; x = x + 1) {
+//            Car2[x] = new Cars(2000, 1000, -(int) (Math.random() * 2 + 1), 0, CarPic2);
+//        }
+        HomeButton = new Button(192, 442, 337, 150);
 
 
     } // StitchWorld()
@@ -96,30 +118,76 @@ public class StitchWorld implements Runnable, KeyListener {
 
     // main thread
     // this is the code that plays the game after you set things up
+
+    public void StartGame() {
+//        for (int x = 0; x < 5; x = x + 1) {
+//            log1[x].xpos = 1000;
+//            log1[x].ypos = 54 * x + 38;
+//            log1[x].dx = (int) (Math.random() * 5 + 1);
+//            log1[x].dy = 0;
+//        }
+//        for (int x = 0; x < 2; x = x + 1) {
+//            log2[x].xpos = 0;
+//            log2[x].ypos = 54 * x + 100;
+//            log2[x].dx = -(int) (Math.random() * 2 + 1);
+//            log2[x].dy = 0;
+//        }
+//        for (int x = 0; x < 5; x = x + 1) {
+//            Car1[x].xpos = 1000;
+//            Car1[x].ypos = 55 * x + 374;
+//            Car1[x].dx = (int) (Math.random() * 5 + 1);
+//            Car1[x].dy = 0;
+//        }
+//        for (int x = 0; x < 2; x = x + 1) {
+//            Car2[x].xpos = 0;
+//            Car2[x].ypos = 54 * x + 400;
+//            Car2[x].dx = -(int) (Math.random() * 2 + 1);
+//            Car2[x].dy = 0;
+//        }
+    }
+
     public void moveThings() {
-        for (int x=0; x<4; x= x + 1) {
+        if (user.isStuck == true) {
+            for (int x = 0; x < 5; x = x + 1) {
+                user.xpos = log1[x].xpos + 100;
+                // user.ypos = log1[x].ypos + 10;
+            }
+        }
+        for (int x = 0; x < 5; x = x + 1) {
             log1[x].move();
         }
-        user.move();
-        if (user.isStuck == false) {
-            user.move();
-        } else {
-            for (int x=0; x<4; x= x + 1) {
-                user.xpos = log1[x].xpos + 100;
-            user.ypos = log1[x].ypos + 10;
-        }
-        }
+
         for (int x = 0; x < 5; x = x + 1) {
             Car1[x].move();
         }
     }
+    public void moveStitch(){
+       // user.move();
+        if (user.isStuck == false) {
+            user.move();
+        }
+    }
     public void collision() {
-        for (int x = 0; x < 4; x++) {
+        System.out.println(user.isStuck);
+        for (int x = 0; x < 5; x++) {
+            hitAny=false;
             if (user.rec.intersects(log1[x].rec) && user.right == false && user.left == false && user.up == false && user.down == false) {
                 user.isStuck = true;
-            } else {
-                user.isStuck = false;
+                hitAny=true;
+                System.out.println("this is x" +x);
             }
+        }
+//        for (int x = 0; x < 2; x++) {
+//            hitAny = false;
+//            if (user.rec.intersects(log2[x].rec) && user.right == false && user.left == false && user.up == false && user.down == false) {
+//                user.isStuck = true;
+//                hitAny = true;
+//            }
+//        }
+            if(hitAny==false){
+
+                user.isStuck = false;
+
         }
             for (int x = 0; x < 5; x++) {
                 if (user.rec.intersects(Car1[x].rec) && user.isIntersecting == false) {
@@ -127,13 +195,21 @@ public class StitchWorld implements Runnable, KeyListener {
                     user.isAlive = false;
                 }
             }
+//            for (int x = 0; x < 2; x++) {
+//                if (user.rec.intersects(Car2[x].rec) && user.isIntersecting == false) {
+//                user.isIntersecting = true;
+//                user.isAlive = false;
+//            }
+//        }
         }
 
 
     public void run() {
         while (true) {
+            user.rec = new Rectangle(user.xpos, user.ypos, user.width, user.height);
+
             moveThings();           //move all the game objects
-            render();// paint the graphics
+            render();// paint the graph mouseClicked(MouseEvent e);ics
             collision();
             pause(20);         // sleep for 20 ms
         }
@@ -144,20 +220,38 @@ public class StitchWorld implements Runnable, KeyListener {
         Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
         g.clearRect(0, 0, WIDTH, HEIGHT);
 
-        //draw characters to the screen
-        g.drawImage(background,0, 0, 1000, 700, null);
-        for (int x=0;x<4;x++){
-            g.drawImage(log1[x].pic, log1[x].xpos, log1[x].ypos, log1[x].width, log1[x].height, null);
+//        draw characters to the screen
+//       if (GoHome == true){
+////        if(GameStart == true) {}
+//         }
+        if (GameIsPlaying == true && GameOver == false) {
+            StartGame();
+            g.drawImage(background,0, 0, 1000, 700, null);
+            for (int x=0;x<5;x++){
+                g.drawImage(log1[x].pic, log1[x].xpos, log1[x].ypos, log1[x].width, log1[x].height, null);
+                g.drawRect(log1[x].xpos, log1[x].ypos,200, 30);
+            }
+            if (user.isAlive == true) {
+                g.drawImage(user.pic, user.xpos, user.ypos, user.width, user.height, null);
+                g.drawRect(user.xpos, user.ypos, user.width, user.height);
+
+            }
+            for(int x=0;x<5;x++) {
+                g.drawImage(Car1[x].pic, Car1[x].xpos, Car1[x].ypos, Car1[x].width, Car1[x].height, null);
+            }
+            if (user.isAlive == false) {
+                g.drawImage(stitchDeadPic, user.xpos, user.ypos, user.width, user.height, null);
+                g.drawImage(LosingScreen,0,0,1000,700,null);
+            }
+
         }
-        if (user.isAlive == true) {
-            g.drawImage(user.pic, user.xpos, user.ypos, user.width, user.height, null);
+        else if(GameOver == false && GameIsPlaying == false) {
+            g.drawImage(Homescreen, 0, 0, 1000, 700, null);
         }
-        if (user.isAlive == false) {
-            g.drawImage(stitchDeadPic, user.xpos, user.ypos, user.width, user.height, null);
+        else {
+            g.drawImage(LosingScreen, 0, 0, 1000, 700, null);
         }
-        for(int x=0;x<5;x++) {
-            g.drawImage(Car1[x].pic, Car1[x].xpos, Car1[x].ypos, Car1[x].width, Car1[x].height, null);
-        }
+
         g.dispose();
         bufferStrategy.show();
     }
@@ -175,17 +269,20 @@ public class StitchWorld implements Runnable, KeyListener {
 
         if (keyCode == 68 ) { // d
             user.right=true;
-
+            moveStitch();
         }
         if (keyCode == 65) { // a
             user.left = true;
+            moveStitch();
         }
 
         if (keyCode == 83) { // s
             user.down = true;
+            moveStitch();
         }
         if (keyCode == 87) { // w
             user.up = true;
+            moveStitch();
         }
     }//keyPressed()
 
@@ -195,7 +292,6 @@ public class StitchWorld implements Runnable, KeyListener {
         //This method will do something when a key is released
         if (keyCode == 68) { // d
             user.right = false;
-
         }
         if (keyCode == 65) { // a
             user.left = false;
@@ -217,6 +313,44 @@ public class StitchWorld implements Runnable, KeyListener {
 
 
     //Graphics setup method
+
+    public void mouseClicked(MouseEvent e) {
+
+        int x, y;
+        x = e.getX();
+        y = e.getY();
+
+        mouseX = x;
+        mouseY = y;
+        System.out.println();
+        System.out.println("Mouse Clicked at " + x + ", " + y);
+
+        if (HomeButton.rec.contains(x, y)) {
+            GameIsPlaying = true;
+        }
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+
     public void setUpGraphics() {
         frame = new JFrame("StitchWorld");   //Create the program window or frame.  Names it.
 
@@ -256,4 +390,18 @@ public class StitchWorld implements Runnable, KeyListener {
         }
     }
 
-}//class
+    @Override
+    public void mouseDragged(MouseEvent e) {
+
+    }
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        int x, y;
+        x = e.getX();
+        y = e.getY();
+
+        mouseX = x;
+        mouseY = y;
+        }
+    }
+//class

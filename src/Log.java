@@ -49,7 +49,7 @@ import java.awt.*;
 			pic = picParameter;
 			isAlive = true;
 			hits = 0;
-			rec = new Rectangle(xpos, ypos, width, height);
+			rec = new Rectangle(xpos, ypos,200,30);
 
 
 		} // constructor
@@ -65,7 +65,7 @@ import java.awt.*;
 
 			}
 
-			rec = new Rectangle(xpos, ypos, width, height);
+			rec = new Rectangle(xpos, ypos, 200, 30);
 
 		}
 

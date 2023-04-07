@@ -45,17 +45,17 @@ public class Stitch {
         ypos = ypos + dy;
 
         if(right == true){
-           xpos = xpos+6;
+           xpos = xpos+64;
         } else if (left == true) {
-            xpos = xpos-6;
+            xpos = xpos-64;
         } else { // (right == false && left == false)
             dx = 0;
         }
 
         if(down == true){
-            dy = 5;
+            ypos = ypos+54;
         } else if (up == true) {
-            dy = -5;
+            ypos = ypos-54;
         } else {
             dy = 0;
         }
