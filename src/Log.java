@@ -17,6 +17,7 @@ import java.awt.*;
 		public Rectangle rec;
 		public Image pic;
 		public int hits;
+		public boolean StitchOnLog;
 
 		// METHOD DEFINITION SECTION
 
@@ -48,8 +49,9 @@ import java.awt.*;
 			dy = dyParameter;
 			pic = picParameter;
 			isAlive = true;
+			StitchOnLog = false;
 			hits = 0;
-			rec = new Rectangle(xpos, ypos,200,30);
+			rec = new Rectangle(xpos+10, ypos+23,200,30);
 
 
 		} // constructor
@@ -65,7 +67,7 @@ import java.awt.*;
 
 			}
 
-			rec = new Rectangle(xpos, ypos, 200, 30);
+			rec = new Rectangle(xpos+10, ypos+23, 200, 30);
 
 		}
 

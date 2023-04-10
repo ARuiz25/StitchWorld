@@ -54,6 +54,7 @@ public class StitchWorld implements Runnable, KeyListener,MouseListener,MouseMot
     public boolean GameIsPlaying = false;
     public boolean GameOver = false;
     public Button HomeButton;
+    public Button EndButton;
     public int mouseX, mouseY;
 
 
@@ -91,13 +92,14 @@ public class StitchWorld implements Runnable, KeyListener,MouseListener,MouseMot
 
         //create (construct) the objects needed for the game
         user = new Stitch(510, 700, 0, 0, stitchPic);
+       user.isAlive=true;
         log1 = new Log[5];
         for (int x = 0; x < 5; x = x + 1) {
             log1[x] = new Log(1000, 54 * x + 38, (int) (Math.random() * 5 + 1), 0, logPic);
         }
 //        log2 = new Log[2];
 //        for (int x = 0; x < 2; x = x + 1) {
-//            log2[x] = new Log(2000, -200, -(int) (Math.random() * 2 + 1), 0, logPic);
+//            log2[x] = new Log(0, 54, -(int) (Math.random() * 2 + 1), 0, logPic);
 //        }
         Car1 = new Cars[5];
         for (int x = 0; x < 5; x = x + 1) {
@@ -105,9 +107,10 @@ public class StitchWorld implements Runnable, KeyListener,MouseListener,MouseMot
         }
 //        Car2 = new Cars[2];
 //        for (int x = 0; x < 2; x = x + 1) {
-//            Car2[x] = new Cars(2000, 1000, -(int) (Math.random() * 2 + 1), 0, CarPic2);
+//            Car2[x] = new Cars(0, 54, -(int) (Math.random() * 2 + 1), 0, CarPic2);
 //        }
         HomeButton = new Button(192, 442, 337, 150);
+        EndButton = new Button(588,420,350,175);
 
 
     } // StitchWorld()
@@ -120,6 +123,7 @@ public class StitchWorld implements Runnable, KeyListener,MouseListener,MouseMot
     // this is the code that plays the game after you set things up
 
     public void StartGame() {
+        StitchWorld again = new StitchWorld();
 //        for (int x = 0; x < 5; x = x + 1) {
 //            log1[x].xpos = 1000;
 //            log1[x].ypos = 54 * x + 38;
@@ -147,34 +151,48 @@ public class StitchWorld implements Runnable, KeyListener,MouseListener,MouseMot
     }
 
     public void moveThings() {
-        if (user.isStuck == true) {
-            for (int x = 0; x < 5; x = x + 1) {
-                user.xpos = log1[x].xpos + 100;
-                // user.ypos = log1[x].ypos + 10;
+        /*for (int x = 0; x < 5; x = x + 1) {
+            if (log1[x].StitchOnLog == true){
+            user.xpos = log1[x].xpos + 100;
             }
-        }
+        }*/
         for (int x = 0; x < 5; x = x + 1) {
             log1[x].move();
         }
-
+//        for (int x = 0; x < 2; x = x + 1) {
+//            log2[x].move();
+//        }
         for (int x = 0; x < 5; x = x + 1) {
             Car1[x].move();
         }
+//        for (int x = 0; x < 2; x = x + 1) {
+//            Car2[x].move();
+//        }
     }
-    public void moveStitch(){
-       // user.move();
-        if (user.isStuck == false) {
-            user.move();
-        }
+    public void moveStitch() {
+        // user.move();
+        // if (user.isStuck == false) {
+//        for (int x = 0; x < 5; x++) {
+//            if (log1[x].StitchOnLog = false) {
+                user.move();
+//            } else {
+//                user.xpos = log1[x].xpos;
+//                user.ypos = log1[x].ypos;
+//            }
+            //}
+//        }
     }
     public void collision() {
         System.out.println(user.isStuck);
         for (int x = 0; x < 5; x++) {
-            hitAny=false;
+           // hitAny=false;
             if (user.rec.intersects(log1[x].rec) && user.right == false && user.left == false && user.up == false && user.down == false) {
-                user.isStuck = true;
-                hitAny=true;
+               log1[x].StitchOnLog = true;
+              //  hitAny=true;
                 System.out.println("this is x" +x);
+            }
+            if(user.rec.intersects(log1[x].rec)==false){
+                log1[x].StitchOnLog= false;
             }
         }
 //        for (int x = 0; x < 2; x++) {
@@ -184,15 +202,16 @@ public class StitchWorld implements Runnable, KeyListener,MouseListener,MouseMot
 //                hitAny = true;
 //            }
 //        }
-            if(hitAny==false){
-
-                user.isStuck = false;
-
-        }
+//        if(hitAny==false){
+//
+//                user.isStuck = false;
+//
+//        }
             for (int x = 0; x < 5; x++) {
                 if (user.rec.intersects(Car1[x].rec) && user.isIntersecting == false) {
                     user.isIntersecting = true;
                     user.isAlive = false;
+                    GameOver=true;
                 }
             }
 //            for (int x = 0; x < 2; x++) {
@@ -221,37 +240,39 @@ public class StitchWorld implements Runnable, KeyListener,MouseListener,MouseMot
         g.clearRect(0, 0, WIDTH, HEIGHT);
 
 //        draw characters to the screen
-//       if (GoHome == true){
-////        if(GameStart == true) {}
-//         }
+//
         if (GameIsPlaying == true && GameOver == false) {
-            StartGame();
+
             g.drawImage(background,0, 0, 1000, 700, null);
             for (int x=0;x<5;x++){
                 g.drawImage(log1[x].pic, log1[x].xpos, log1[x].ypos, log1[x].width, log1[x].height, null);
-                g.drawRect(log1[x].xpos, log1[x].ypos,200, 30);
+                g.drawRect(log1[x].xpos+10, log1[x].ypos+23,200, 30);
             }
+//            for (int x=0;x<2;x++){
+//                g.drawImage(log2[x].pic, log2[x].xpos, log2[x].ypos, log2[x].width, log2[x].height, null);
+//            }
             if (user.isAlive == true) {
                 g.drawImage(user.pic, user.xpos, user.ypos, user.width, user.height, null);
                 g.drawRect(user.xpos, user.ypos, user.width, user.height);
-
             }
             for(int x=0;x<5;x++) {
                 g.drawImage(Car1[x].pic, Car1[x].xpos, Car1[x].ypos, Car1[x].width, Car1[x].height, null);
             }
-            if (user.isAlive == false) {
+//            for(int x=0;x<2;x++) {
+//                g.drawImage(Car2[x].pic, Car2[x].xpos, Car2[x].ypos, Car2[x].width, Car2[x].height, null);
+//            }
+           /* if (user.isAlive == false) {
                 g.drawImage(stitchDeadPic, user.xpos, user.ypos, user.width, user.height, null);
                 g.drawImage(LosingScreen,0,0,1000,700,null);
-            }
+            }*/
 
         }
         else if(GameOver == false && GameIsPlaying == false) {
             g.drawImage(Homescreen, 0, 0, 1000, 700, null);
         }
-        else {
+        else if(GameOver == true){
             g.drawImage(LosingScreen, 0, 0, 1000, 700, null);
         }
-
         g.dispose();
         bufferStrategy.show();
     }
@@ -268,19 +289,23 @@ public class StitchWorld implements Runnable, KeyListener,MouseListener,MouseMot
         System.out.println("Key Pressed: " + key + "  Code: " + keyCode);
 
         if (keyCode == 68 ) { // d
-            user.right=true;
+           //user.isStuck = false;
+            user.right = true;
             moveStitch();
         }
         if (keyCode == 65) { // a
+            //user.isStuck = false;
             user.left = true;
             moveStitch();
         }
 
         if (keyCode == 83) { // s
+           //user.isStuck = false;
             user.down = true;
             moveStitch();
         }
         if (keyCode == 87) { // w
+            //user.isStuck = false;
             user.up = true;
             moveStitch();
         }
@@ -327,6 +352,12 @@ public class StitchWorld implements Runnable, KeyListener,MouseListener,MouseMot
 
         if (HomeButton.rec.contains(x, y)) {
             GameIsPlaying = true;
+            GameOver = false;
+        }
+        if (EndButton.rec.contains(x,y)){
+            GameIsPlaying = true;
+            GameOver = false;
+            StartGame();
         }
 
     }

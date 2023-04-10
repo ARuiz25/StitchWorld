@@ -60,7 +60,7 @@ public class Stitch {
             dy = 0;
         }
 
-        if(xpos>1000-width){ // right
+       /* if(xpos>1000-width){ // right
             xpos = 1000-width;
         }
         if(xpos < 0) { // left
@@ -72,7 +72,7 @@ public class Stitch {
         if(ypos < 0) { // up
             ypos = 0;
         }
-
+*/
 
         //always put this after you've done all the changing of the xpos and ypos values
         rec = new Rectangle(xpos, ypos, width, height);
